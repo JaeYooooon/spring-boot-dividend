@@ -1,6 +1,8 @@
 package zerobase.dividend.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import zerobase.dividend.model.Company;
 import zerobase.dividend.model.Dividend;
@@ -11,15 +13,19 @@ import zerobase.dividend.persist.entity.CompanyEntity;
 import zerobase.dividend.persist.entity.DividendEntity;
 
 import java.util.*;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static zerobase.dividend.model.constants.CacheKey.KEY_FINANCE;
+
+@Slf4j
 @Service
 @AllArgsConstructor
 public class FinanceService {
     private final DividendRepository dividendRepository;
     private final CompanyRepository companyRepository;
+    @Cacheable(key = "#companyName", value = KEY_FINANCE)
     public ScrapedResult getDividendByCompanyName(String companyName){
+        log.info("search company -> " + companyName);
         CompanyEntity company = this.companyRepository.findByName(companyName)
                                         .orElseThrow(() -> new RuntimeException("존재하지 않는 회사명입니다"));
 
@@ -32,13 +38,8 @@ public class FinanceService {
 //                    .dividend(entity.getDividend())
 //                    .build());
 //        }
-        List<Dividend> dividends = dividendEntities.stream().map(e -> Dividend.builder()
-                                                            .date(e.getDate())
-                                                            .dividend(e.getDividend())
-                                                            .build()).collect(Collectors.toList());
-        return new ScrapedResult(Company.builder()
-                                        .ticker(company.getTicker())
-                                        .name(company.getName())
-                                        .build(), dividends);
+        List<Dividend> dividends = dividendEntities.stream().map(e ->
+                                 new Dividend(e.getDate(), e.getDividend())).collect(Collectors.toList());
+        return new ScrapedResult(new Company(company.getTicker(), company.getName()), dividends);
     }
 }
