@@ -1,7 +1,6 @@
 package zerobase.dividend.scraper;
 
-import zerobase.dividend.model.Company;
-import zerobase.dividend.model.ScrapedResult;
+import zerobase.dividend.model.*;
 
 public interface Scraper {
     Company scrapCompanyByTicker(String ticker);

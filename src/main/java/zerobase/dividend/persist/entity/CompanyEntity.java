@@ -1,10 +1,6 @@
 package zerobase.dividend.persist.entity;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import zerobase.dividend.model.Company;
 
 import javax.persistence.*;

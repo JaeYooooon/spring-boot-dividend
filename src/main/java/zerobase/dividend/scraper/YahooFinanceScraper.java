@@ -1,20 +1,15 @@
 package zerobase.dividend.scraper;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import org.jsoup.*;
+import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
-import zerobase.dividend.model.Company;
-import zerobase.dividend.model.Dividend;
-import zerobase.dividend.model.ScrapedResult;
+import zerobase.dividend.model.*;
 import zerobase.dividend.model.constants.Month;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class YahooFinanceScraper implements Scraper{

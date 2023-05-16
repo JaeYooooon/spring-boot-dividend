@@ -5,13 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import zerobase.dividend.exception.impl.NoCompanyException;
-import zerobase.dividend.model.Company;
-import zerobase.dividend.model.Dividend;
-import zerobase.dividend.model.ScrapedResult;
-import zerobase.dividend.persist.CompanyRepository;
-import zerobase.dividend.persist.DividendRepository;
-import zerobase.dividend.persist.entity.CompanyEntity;
-import zerobase.dividend.persist.entity.DividendEntity;
+import zerobase.dividend.model.*;
+import zerobase.dividend.persist.*;
+import zerobase.dividend.persist.entity.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,11 +18,14 @@ import static zerobase.dividend.model.constants.CacheKey.KEY_FINANCE;
 @Service
 @AllArgsConstructor
 public class FinanceService {
+
     private final DividendRepository dividendRepository;
     private final CompanyRepository companyRepository;
     @Cacheable(key = "#companyName", value = KEY_FINANCE)
     public ScrapedResult getDividendByCompanyName(String companyName){
+
         log.info("search company -> " + companyName);
+
         CompanyEntity company = this.companyRepository.findByName(companyName)
                                         .orElseThrow(() -> new NoCompanyException());
 
@@ -41,6 +40,7 @@ public class FinanceService {
 //        }
         List<Dividend> dividends = dividendEntities.stream().map(e ->
                                  new Dividend(e.getDate(), e.getDividend())).collect(Collectors.toList());
+
         return new ScrapedResult(new Company(company.getTicker(), company.getName()), dividends);
     }
 }

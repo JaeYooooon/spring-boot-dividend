@@ -2,18 +2,14 @@ package zerobase.dividend.web;
 
 import lombok.AllArgsConstructor;
 import org.springframework.cache.CacheManager;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import zerobase.dividend.model.Company;
-import zerobase.dividend.model.constants.CacheKey;
 import zerobase.dividend.persist.entity.CompanyEntity;
 import zerobase.dividend.service.CompanyService;
-
-import java.util.List;
 
 import static zerobase.dividend.model.constants.CacheKey.*;
 

@@ -2,18 +2,13 @@ package zerobase.dividend.service;
 
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.Trie;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import zerobase.dividend.exception.impl.NoCompanyException;
-import zerobase.dividend.model.Company;
-import zerobase.dividend.model.ScrapedResult;
-import zerobase.dividend.persist.CompanyRepository;
-import zerobase.dividend.persist.DividendRepository;
-import zerobase.dividend.persist.entity.CompanyEntity;
-import zerobase.dividend.persist.entity.DividendEntity;
+import zerobase.dividend.model.*;
+import zerobase.dividend.persist.*;
+import zerobase.dividend.persist.entity.*;
 import zerobase.dividend.scraper.Scraper;
 
 import java.util.List;
@@ -48,17 +43,23 @@ public class CompanyService {
 
         ScrapedResult scrapedResult = this.yahooFinanceScraper.scrap(company);
         CompanyEntity companyEntity = this.companyRepository.save(new CompanyEntity(company));
+
         List<DividendEntity> dividendEntityList = scrapedResult.getDividends().stream()
-                .map(e -> new DividendEntity(companyEntity.getId(), e))
-                .collect(Collectors.toList());
+                                                                .map(e -> new DividendEntity(companyEntity.getId(), e))
+                                                                .collect(Collectors.toList());
+
         this.dividendRepository.saveAll(dividendEntityList);
+
         return company;
     }
 
     public List<String> getCompanyNamesByKeyword(String keyword){
         Pageable limit = PageRequest.of(0, 10);
-        Page<CompanyEntity> companyEntities = this.companyRepository.findByNameStartingWithIgnoreCase(keyword, limit);
-        return companyEntities.stream().map(e -> e.getName()).collect(Collectors.toList());
+        Page<CompanyEntity> companyEntities = this.companyRepository
+                                                  .findByNameStartingWithIgnoreCase(keyword, limit);
+
+        return companyEntities.stream()
+                .map(e -> e.getName()).collect(Collectors.toList());
     }
 
     public void addAutocompleteKeyword(String keyword){
